@@ -1,0 +1,9 @@
+[package]
+name = "interval_set"
+authors = [ "Samu698 <samu@cerea.dev>" ]
+description = "Data structure for sets of intervals"
+license = "GPL-2.0"
+version = "1.0.0"
+edition = "2024"
+
+[dependencies]
