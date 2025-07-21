@@ -1,5 +1,6 @@
 use std::fmt::{Debug, Display};
 use std::ops::{Range, RangeFrom, RangeFull, RangeInclusive, RangeTo, RangeToInclusive};
+
 use crate::traits::Bounded;
 use crate::Step;
 
@@ -33,6 +34,25 @@ impl<Idx: Step> Interval<Idx> {
     /// Get the upper bound of the interval
     #[inline]
     pub fn hi(&self) -> &Idx { &self.hi }
+
+    /// Returns a lower bound for the number of elements in the interval
+    ///
+    /// The returned value can be lower than the real number of elements,
+    /// use [`Interval::size_exact`] to get the exact size.
+    ///
+    /// If this value is less than [`usize::MAX`] then the value is always
+    /// correct
+    pub fn size(&self) -> usize {
+        Idx::steps_between(&self.lo, &self.hi).0
+    }
+
+    /// Returns the number of elements in the interval
+    ///
+    /// This value is [`None`] when the number of elements is greater than
+    /// `usize::MAX` and would overflow `usize`
+    pub fn size_exact(&self) -> Option<usize> {
+        Idx::steps_between(&self.lo, &self.hi).1
+    }
 
     /// Computes the hull between of the intervals
     ///
@@ -104,7 +124,7 @@ impl<Idx> Copy for Interval<Idx> where Idx: Copy + Step {}
 impl<Idx: Step> From<Range<Idx>> for Interval<Idx> {
     #[inline]
     fn from(value: Range<Idx>) -> Self {
-        let hi = Idx::backward(value.end);
+        let hi = Idx::backward(&value.end);
         Self::new(value.start, hi)
     }
 }
@@ -122,7 +142,7 @@ impl<Idx> From<RangeTo<Idx>> for Interval<Idx>
 {
     #[inline]
     fn from(value: RangeTo<Idx>) -> Self {
-        let hi = Idx::backward(value.end);
+        let hi = Idx::backward(&value.end);
         Self::new(Idx::MIN, hi)
     }
 }

@@ -31,6 +31,39 @@ impl<Idx: Step> IntervalSet<Idx> {
         Self { intervals: vec![ (value.clone()..=value).into() ] }
     }
 
+    /// Returns a lower bound for the number of elements in the set
+    ///
+    /// The returned value can be lower than the real number of elements,
+    /// use [`IntervalSet::size_exact`] to get the exact size.
+    ///
+    /// If this value is less than [`usize::MAX`] then the value is always
+    /// correct
+    pub fn size(&self) -> usize {
+        let mut size = 0usize;
+        for interval in self.iter() {
+            size = match size.checked_add(interval.size()) {
+                Some(sum) => sum,
+                None => return usize::MAX,
+            };
+        }
+        size
+    }
+
+    /// Returns the number of elements in the set
+    ///
+    /// This value is [`None`] when the number of elements is greater than
+    /// `usize::MAX` and would overflow `usize`
+    pub fn size_exact(&self) -> Option<usize> {
+        let mut size = 0usize;
+        for interval in self.iter() {
+            size = match size.checked_add(interval.size_exact()?) {
+                Some(sum) => sum,
+                None => return None,
+            };
+        }
+        Some(size)
+    }
+
     /// Inserts an interval in the set
     pub fn insert(&mut self, interval: impl Into<Interval<Idx>>) {
         // TODO: make this better
@@ -58,7 +91,7 @@ impl<Idx: Step> IntervalSet<Idx> {
             None => return Self { intervals: result }
         };
         for interval in iter {
-            if interval.lo() <= &Idx::forward(prev.hi().clone()) {
+            if interval.lo() <= &Idx::forward(prev.hi()) {
                 prev = prev.hull(interval);
             } else {
                 result.push(prev);
