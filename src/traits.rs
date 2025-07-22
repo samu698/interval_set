@@ -1,4 +1,4 @@
-use std::{char, net::{Ipv4Addr, Ipv6Addr}};
+use std::net::{Ipv4Addr, Ipv6Addr};
 
 /// Types that have *successor* and *predecessor* operations.
 ///

@@ -1,8 +1,7 @@
 use std::fmt::{Debug, Display};
 use std::ops::{Range, RangeFrom, RangeFull, RangeInclusive, RangeTo, RangeToInclusive};
 
-use crate::traits::Bounded;
-use crate::Step;
+use crate::traits::{Bounded, Step};
 
 /// An interval over the type `Idx`.
 ///

@@ -2,8 +2,8 @@ use std::cmp::Ordering;
 use std::fmt::{Debug, Display};
 use std::iter::Peekable;
 
-use crate::traits::Bounded;
-use crate::{Interval, Step};
+use crate::interval::Interval;
+use crate::traits::{Bounded, Step};
 
 /// Datatype for storing a set of intervals.
 ///
