@@ -167,7 +167,7 @@ impl<Idx> IntervalSet<Idx>
 }
 
 impl<Idx> Debug for IntervalSet<Idx>
-    where Idx: Ord + Step + Debug
+    where Idx: Debug + Step
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(f, "{:?}", self.intervals)
@@ -175,7 +175,7 @@ impl<Idx> Debug for IntervalSet<Idx>
 }
 
 impl<Idx> Display for IntervalSet<Idx>
-    where Idx: Ord + Step + Display
+    where Idx: Display + Step
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(f, "(")?;

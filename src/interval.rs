@@ -44,6 +44,7 @@ impl<Idx: Step> Interval<Idx> {
     /// correct
     pub fn size(&self) -> usize {
         Idx::steps_between(&self.lo, &self.hi).0
+            .saturating_add(1)
     }
 
     /// Returns the number of elements in the interval
@@ -52,6 +53,7 @@ impl<Idx: Step> Interval<Idx> {
     /// `usize::MAX` and would overflow `usize`
     pub fn size_exact(&self) -> Option<usize> {
         Idx::steps_between(&self.lo, &self.hi).1
+            .and_then(|s| s.checked_add(1))
     }
 
     /// Computes the hull between of the intervals
