@@ -20,7 +20,7 @@ pub struct IntervalSet<Idx: Step> {
 macro_rules! iset {
     [] => { IntervalSet::empty() };
     [$first:expr $(, $int:expr)* $(,)?] => {{
-        let mut __set = IntervalSet::interval($first);
+        let mut __set = $crate::IntervalSet::interval($first);
         $(__set.insert($int);)*;
         __set
     }};
