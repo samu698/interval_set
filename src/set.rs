@@ -15,6 +15,17 @@ pub struct IntervalSet<Idx: Step> {
     intervals: Vec<Interval<Idx>>
 }
 
+/// Macro helper for initializing an [`IntervalSet`]
+#[macro_export]
+macro_rules! iset {
+    [] => { IntervalSet::empty() };
+    [$first:expr $(, $int:expr)* $(,)?] => {{
+        let mut __set = IntervalSet::interval($first);
+        $(__set.insert($int))*;
+        __set
+    }};
+}
+
 impl<Idx: Step> IntervalSet<Idx> {
     /// Returns the empty interval set
     pub fn empty() -> Self {
@@ -24,11 +35,6 @@ impl<Idx: Step> IntervalSet<Idx> {
     /// Returns the set the contains a single interval
     pub fn interval(interval: impl Into<Interval<Idx>>) -> Self {
         Self { intervals: vec![ interval.into() ] }
-    }
-
-    /// Returns the set the contains a single value
-    pub fn single(value: Idx) -> Self {
-        Self { intervals: vec![ (value.clone()..=value).into() ] }
     }
 
     /// Returns a lower bound for the number of elements in the set
@@ -68,12 +74,6 @@ impl<Idx: Step> IntervalSet<Idx> {
     pub fn insert(&mut self, interval: impl Into<Interval<Idx>>) {
         // TODO: make this better
         let tmp = Self::interval(interval);
-        *self = self.union(&tmp);
-    }
-
-    /// Inserts a single value in the set
-    pub fn insert_single(&mut self, value: Idx) {
-        let tmp = Self::single(value);
         *self = self.union(&tmp);
     }
 

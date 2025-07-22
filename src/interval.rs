@@ -121,6 +121,18 @@ impl<Idx> Display for Interval<Idx>
 
 impl<Idx> Copy for Interval<Idx> where Idx: Copy + Step {}
 
+impl<Idx: Step> From<Idx> for Interval<Idx> {
+    fn from(value: Idx) -> Self {
+        Self::new(value.clone(), value)
+    }
+}
+
+impl<Idx: Step> From<&Idx> for Interval<Idx> {
+    fn from(value: &Idx) -> Self {
+        Self::new(value.clone(), value.clone())
+    }
+}
+
 impl<Idx: Step> From<Range<Idx>> for Interval<Idx> {
     #[inline]
     fn from(value: Range<Idx>) -> Self {
