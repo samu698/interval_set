@@ -21,7 +21,7 @@ macro_rules! iset {
     [] => { IntervalSet::empty() };
     [$first:expr $(, $int:expr)* $(,)?] => {{
         let mut __set = IntervalSet::interval($first);
-        $(__set.insert($int))*;
+        $(__set.insert($int);)*;
         __set
     }};
 }
