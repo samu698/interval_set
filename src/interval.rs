@@ -84,6 +84,43 @@ impl<Idx: Step> Interval<Idx> {
         }
     }
 
+    /// Computes the difference of the intervals
+    ///
+    /// This function returns a tuple containing the left and the right part
+    /// of the difference. The resulting values are `None` when the interval for
+    /// that region would be empty
+    ///
+    /// The left interval contains values *smaller* than the subtrahend while the
+    /// right interval contains values *bigger* than the subtrahend.
+    ///
+    /// Example:
+    /// ```
+    /// a..................A
+    ///       b......B
+    /// --------------------
+    /// l....L        r....R
+    /// ```
+    pub fn difference(&self, other: &Self) -> (Option<Self>, Option<Self>) {
+        let (a_lo, a_hi) = (&self.lo, &self.hi);
+        let (b_lo, b_hi) = (&other.lo, &other.hi);
+
+        let left = if a_lo < b_lo {
+            let hi = a_hi.clone().min(Idx::backward(b_lo));
+            Some(Self::new(a_lo.clone(), hi))
+        } else {
+            None
+        };
+
+        let right = if a_hi > b_hi {
+            let lo = a_lo.clone().max(Idx::forward(b_hi));
+            Some(Self::new(lo, a_hi.clone()))
+        } else {
+            None
+        };
+
+        (left, right)
+    }
+
     /// Checks if the interval overlaps another interval
     pub fn overlaps(&self, other: &Self) -> bool {
         self.hi >= other.lo && other.hi >= self.lo

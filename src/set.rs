@@ -141,6 +141,38 @@ impl<Idx: Step> IntervalSet<Idx> {
         Self { intervals: result }
     }
 
+    /// Computes the difference between the two sets
+    ///
+    /// The result is the set containing all elements in `self` but not in
+    /// `other`
+    pub fn difference(&self, other: &Self) -> Self {
+        let mut result = vec![];
+
+        let mut a_iter = self.iter();
+        let mut b_iter = other.iter();
+
+        let mut a_int = a_iter.next();
+        let mut b_int = b_iter.next();
+
+        let (mut right, mut left);
+        while let (Some(a), Some(b)) = (a_int, b_int) {
+            (left, right) = a.difference(b);
+            if let Some(left) = left { result.push(left); }
+            a_int = match right {
+                Some(ref r) => {
+                    b_int = b_iter.next();
+                    Some(r)
+                }
+                None => a_iter.next()
+            };
+        }
+
+        if let Some(a) = a_int { result.push(a.clone()); }
+        result.extend(a_iter.cloned());
+
+        Self { intervals: result }
+    }
+
     /// Returns the iterator over all the intervals in the set
     pub fn iter(&self) -> std::slice::Iter<'_, Interval<Idx>> {
         self.intervals.iter()
@@ -162,7 +194,7 @@ impl<Idx> IntervalSet<Idx>
     ///
     /// This operation requires the the index is [`Bounded`]
     pub fn complement(&self) -> Self {
-        Self::full().intersection(self)
+        Self::full().difference(self)
     }
 }
 
