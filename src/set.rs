@@ -148,6 +148,14 @@ impl<Idx> IntervalSet<Idx>
     pub fn full() -> Self {
         Self { intervals: vec![Interval::full()] }
     }
+
+    /// Takes the complement of the set, retuning the set that contains the
+    /// elements not in the current set
+    ///
+    /// This operation requires the the index is [`Bounded`]
+    pub fn complement(&self) -> Self {
+        Self::full().intersection(self)
+    }
 }
 
 impl<Idx> Debug for IntervalSet<Idx>
