@@ -37,6 +37,14 @@ impl<Idx: Step> IntervalSet<Idx> {
         Self { intervals: vec![ interval.into() ] }
     }
 
+    /// Return the number of intervals contained in the set
+    ///
+    /// To get the number of elements in the set use [`IntervalSet::size`] or
+    /// [`IntervalSet::size_exact`]
+    pub fn intervals(&self) -> usize {
+        self.intervals.len()
+    }
+
     /// Returns a lower bound for the number of elements in the set
     ///
     /// The returned value can be lower than the real number of elements,
